@@ -8,12 +8,13 @@ using ChecksAndBalances.Service.Services;
 using ChecksAndBalances.Web.Areas.Admin.Models;
 using ChecksAndBalances.Extensions;
 using ChecksAndBalances.Web.Attributes;
+using ChecksAndBalances.Web.Controllers;
 using Newtonsoft.Json;
 
 namespace ChecksAndBalances.Web.Areas.Admin.Controllers
 {
     [Authorize(Roles="Administrator")]
-    public class ArticleController : Controller
+    public class ArticleController : ChecksAndBalancesControllerBase
     {
        IArticleService _service;
        ICategoryTagService _tagService;
@@ -23,9 +24,6 @@ namespace ChecksAndBalances.Web.Areas.Admin.Controllers
             _service = service;
             _tagService = tagService;
         }
-
-        //
-        // GET: /Admin/
 
         public ActionResult Index(int? page)
         {
@@ -37,6 +35,7 @@ namespace ChecksAndBalances.Web.Areas.Admin.Controllers
                     .Skip(page.GetValueOrDefault())
                     .Take(ArticleViewModel.ItemsPerPage)
             };
+
             return View(viewModel);
         }
 
@@ -46,13 +45,9 @@ namespace ChecksAndBalances.Web.Areas.Admin.Controllers
 
             article.Id = id.GetValueOrDefault();
 
-            ViewBag.States = _service.GetStates().Select(x => new SelectListItem
-            {
-                Value = ((int)x).ToString(),
-                Text = x.ToDescription()
-            });
+            ViewBag.States = StateSelectList;
 
-            ViewBag.Tags = _tagService.GetTags();
+            ViewBag.Tags = _tagService.GetAllTags();
 
             return View(article);
         }

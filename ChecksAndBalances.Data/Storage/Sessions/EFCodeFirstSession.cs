@@ -55,7 +55,7 @@ namespace ChecksAndBalances.Data.Storage.Sessions
             return All<T>().FirstOrDefault(expression);
         }
 
-        public IQueryable<T> All<T>() where T : class, IEntity, new()
+        public DbSet<T> All<T>() where T : class, IEntity, new()
         {
             return _context.Set<T>();
         }

@@ -10,6 +10,9 @@ namespace ChecksAndBalances.Data.Storage.Context
 
     public class ChecksAndBalancesSession : Sessions.EFCodeFirstSession, IChecksAndBalancesSession
     {
-        public ChecksAndBalancesSession() : base(new ChecksAndBalancesContext()) { }
+        public ChecksAndBalancesSession() : base(new ChecksAndBalancesContext())
+        {
+            
+        }
     }
 }

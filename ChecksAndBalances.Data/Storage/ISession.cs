@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
@@ -15,7 +16,7 @@ namespace ChecksAndBalances.Data.Storage
         void Delete<T>(T item) where T : class, IEntity, new();
         void DeleteAll<T>() where T : class, IEntity, new();
         T Single<T>(Expression<Func<T, bool>> expression) where T : class, IEntity, new();
-        System.Linq.IQueryable<T> All<T>() where T : class, IEntity, new();
+        DbSet<T> All<T>() where T : class, IEntity, new();
         void Add<T>(T item) where T : class, IEntity, new();
         void Add<T>(IEnumerable<T> items) where T : class, IEntity, new();
         void Update<T>(T item) where T : class, IEntity, new();

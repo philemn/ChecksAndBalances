@@ -15,19 +15,20 @@ namespace ChecksAndBalances.Service.Services
     {
         Article Get(int id);
         Article Get(string name);
-        IEnumerable<Article> GetArticles();
-        IEnumerable<Article> ArticlesByState(State state);
+        IEnumerable<Article> GetArticles(int page = 1, int size = 10);
+        IEnumerable<Article> ArticlesByState(State state, int page = 1, int size = 10);
 
-        IEnumerable<State> GetStates();
-        
         Article GetArticleInProgress(int id);
-        IEnumerable<Article> GetArticlesInProgress();
+        IEnumerable<Article> GetArticlesInProgress(int page = 1, int size = 10);
 
         ArticleInProgress SaveArticle(ArticleInProgress article);
         Article PublishArticle(Article article);
 
         void Delete(int id);
         void Revoke(int id);
+
+        IEnumerable<Article> GetPopularArticles(int size = 5);
+        IEnumerable<Article> GetRecentlyCommentedArticles(int size = 5);
     }
 
     class ArticleService : IArticleService
@@ -49,9 +50,17 @@ namespace ChecksAndBalances.Service.Services
             return _session.Single<Article>(x => x.Title.ToLower() == name.ToLower());
         }
 
-        public IEnumerable<Article> GetArticles()
+        public IEnumerable<Article> GetArticles(int page = 1, int size = 10)
         {
-            return _session.All<Article>().OrderByDescending(x => x.DatePublished).ToList();
+            var skip = (page - 1) * size;
+
+            return _session.All<Article>()
+                .Include("States")
+                .Include("Advertisement")
+                .OrderByDescending(x => x.DatePublished)
+                .Skip(skip)
+                .Take(size)
+                .ToList();
         }
 
         public Article GetArticleInProgress(int id)
@@ -68,9 +77,14 @@ namespace ChecksAndBalances.Service.Services
             return article;
         }
 
-        public IEnumerable<Article> GetArticlesInProgress()
+        public IEnumerable<Article> GetArticlesInProgress(int page = 1, int size = 10)
         {
-            var articlesInProgress = _session.All<ArticleInProgress>();
+            var skip = (page - 1) * size;
+
+            var articlesInProgress = _session.All<ArticleInProgress>()
+                .OrderByDescending(x => x.Id)
+                .Skip(skip)
+                .Take(size);
 
             return articlesInProgress.ToList().Select(x => {
                 var article = JsonConvert.DeserializeObject<Article>(x.SavedContent, new JsonSerializerSettings
@@ -83,14 +97,15 @@ namespace ChecksAndBalances.Service.Services
             });
         }
 
-        public IEnumerable<Article> ArticlesByState(State state)
+        public IEnumerable<Article> ArticlesByState(State state, int page = 1, int size = 10)
         {
-            return GetByState(state).OrderByDescending(x => x.DatePublished).ToList();
-        }
+            var skip = (page - 1) * size;
 
-        public IEnumerable<State> GetStates()
-        {
-            return Enum.GetValues(typeof(State)).Cast<State>();
+            return GetByState(state)
+                .OrderByDescending(x => x.DatePublished)
+                .Skip(skip)
+                .Take(size)
+                .ToList();
         }
 
         public ArticleInProgress SaveArticle(ArticleInProgress article)
@@ -156,6 +171,21 @@ namespace ChecksAndBalances.Service.Services
             _session.Add<ArticleInProgress>(articleInProgress);
             _session.Delete<Article>(article);
             _session.CommitChanges();
+        }
+
+        public IEnumerable<Article> GetPopularArticles(int size = 5)
+        {
+            return _session.All<Article>().OrderByDescending(x => x.Views).Take(size);
+        }
+
+        public IEnumerable<Article> GetRecentlyCommentedArticles(int size = 5)
+        {
+            var articles = from article in _session.All<Article>()
+                           let latestComment = article.Comments.OrderByDescending(x => x.DateCreated).FirstOrDefault()
+                           orderby latestComment.DateCreated descending
+                           select article;
+
+            return articles.Take(size);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model System.Collections.Generic.IEnumerable<ChecksAndBalances.Data.Models.Article>
+﻿@model System.Collections.Generic.IList<ChecksAndBalances.Data.Models.Article>
 @using ChecksAndBalances.Extensions
 
 @{
@@ -17,10 +17,10 @@
 @section sectionTitle {
     <section class="section-title">
         <div class="container">
-            @if (Model.Any() && Model.First().Advertisement != null)
+            @if (Model.Any() && Model[0].Advertisement != null && !string.IsNullOrWhiteSpace(Model[0].Advertisement.Url))
             {
-                <a href="@Model.First().Advertisement.Url">
-                    <img height="100" width="940" src="@Model.First().Advertisement.ImageUrl" />
+                <a href="@Model[0].Advertisement.Url">
+                    <img height="100" width="940" src="@Model[0].Advertisement.ImageUrl" />
                 </a>
             }
         </div>
@@ -34,12 +34,12 @@
         <div class="post-entry">
             <div class="post-head columns nine first">
                 <h4 class="post-title columns eight">
-                    No Articles Yet.
+                    No articles have been created yet.
                 </h4>
             </div>
 
             <ul class="post-meta">
-                <li>Coming soon</li>
+                <li>Coming soon!</li>
             </ul>
 
             <div class="post-media2">

@@ -12,10 +12,8 @@ namespace ChecksAndBalances.Service.Services
     public interface ICategoryTagService
     {
         CategoryTag Get(int id);
-        IEnumerable<CategoryTag> GetTags();
-
-        IEnumerable<CategoryTag> GetTagsByState(State state);
-        IEnumerable<Article> ArticlesByTag(State state, string tag);
+        IEnumerable<CategoryTag> GetAllTags();
+        IEnumerable<CategoryTag> GetTagsByState(State state, int size = 10);
     }
 
     public class CategoryTagService : ICategoryTagService
@@ -32,25 +30,22 @@ namespace ChecksAndBalances.Service.Services
             return _session.Single<CategoryTag>(x => x.Id == id);
         }
 
-        public IEnumerable<CategoryTag> GetTags()
+        public IEnumerable<CategoryTag> GetAllTags()
         {
-            return _session.All<CategoryTag>().ToList();
+            return _session.All<CategoryTag>()
+                .OrderBy(x => x.Name)
+                .ToList();
         }
 
-        public IEnumerable<CategoryTag> GetTagsByState(State state)
+        public IEnumerable<CategoryTag> GetTagsByState(State state, int size = 10)
         {
-            return GetByState(state).SelectMany(x => x.Tags).Distinct().OrderByDescending(x => x.Articles.Count()).ToList();
-        }
+            var articleTags = from tag in _session.All<CategoryTag>()
+                              where tag.Articles.Any(x => x.States.Any(y => y.StateId == (int)state))
+                              let count = tag.Articles.Count()
+                              orderby count descending
+                              select tag;
 
-        public IEnumerable<Article> ArticlesByTag(State state, string tag)
-        {
-            return GetByState(state).Where(x => x.Tags.Any(y => y.Name == tag)).ToList();
-        }
-
-        private IQueryable<Article> GetByState(State state)
-        {
-            return _session.All<Article>()
-                .Where(x => x.States.Any(y => y.StateId == (int)state));
+            return articleTags.Take(size);
         }
     }
 }
