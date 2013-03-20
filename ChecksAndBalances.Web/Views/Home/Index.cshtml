@@ -75,9 +75,11 @@
                 <li class="comments">@article.Comments.Count() Comments</li>
             </ul>
 
+            @if (!string.IsNullOrWhiteSpace(article.ImageUrl)) {
             <div class="post-media2">
                 <img class="small" src="@article.ImageUrl" />
             </div>
+            }
 
             <div class="post-content">
                 @article.Description

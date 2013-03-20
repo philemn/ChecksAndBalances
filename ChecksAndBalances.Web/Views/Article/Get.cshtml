@@ -34,9 +34,11 @@
                 <h4 class="post-title">
                     <a href="#">@Model.Title</a>
                 </h4>
+                @if (!string.IsNullOrWhiteSpace(Model.ImageUrl)) {
                 <div class="post-media">
-                    <img class="large" src="@Model.ImageUrl" alt="" />
+                    <img src="@Model.ImageUrl" alt="" />
                 </div>
+                }
                 <ul class="post-meta">
                     <li class="author">@Model.Authors</li>
                     <li class="cat">
