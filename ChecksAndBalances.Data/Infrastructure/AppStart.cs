@@ -31,8 +31,8 @@ namespace ChecksAndBalances.Data.Infrastructure
 
         public static void RegisterDatabaseInitializer()
         {
-            //Database.SetInitializer<ChecksAndBalancesContext>(new ChecksAndBalancesInitializer());
-            Database.SetInitializer<ChecksAndBalancesContext>(null);
+            Database.SetInitializer<ChecksAndBalancesContext>(new ChecksAndBalancesInitializer());
+            //Database.SetInitializer<ChecksAndBalancesContext>(null);
         }
     }
 }

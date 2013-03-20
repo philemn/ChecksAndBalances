@@ -82,22 +82,19 @@ namespace ChecksAndBalances.Web.App_Start
             context.BeginRequest += (sender, e) =>
             {
                 var request = ((HttpApplication)sender).Request;
-                //TODO: By default only local requests are profiled, optionally you can set it up
-                //  so authenticated users are always profiled
                 if (request.IsLocal) { MiniProfiler.Start(); }
             };
 
-
-            // TODO: You can control who sees the profiling information
-            /*
             context.AuthenticateRequest += (sender, e) =>
             {
-                if (!CurrentUserIsAllowedToSeeProfiler())
+                var application = (HttpApplication)sender;
+                var user = application.User;
+
+                if (user != null && user.Identity.Name.Equals("admin", StringComparison.OrdinalIgnoreCase))
                 {
                     StackExchange.Profiling.MiniProfiler.Stop(discardResults: true);
                 }
             };
-            */
 
             context.EndRequest += (sender, e) =>
             {
