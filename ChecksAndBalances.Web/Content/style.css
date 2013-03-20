@@ -2832,8 +2832,6 @@ img#error-404 {
 }
 .post-entry img {  
   max-width: 100%;
-  width: 100%;
-  height: auto;
 }
 .blog-masonry {  
   margin-right: -20px;
