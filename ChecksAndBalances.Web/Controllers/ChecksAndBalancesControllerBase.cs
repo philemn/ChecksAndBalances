@@ -16,7 +16,7 @@ namespace ChecksAndBalances.Web.Controllers
         {
             StateSelectList = StateService.States.Select(x => new SelectListItem
             {
-                Value = x.ToString(),
+                Value = ((int)x).ToString(),
                 Text = x.ToDescription()
             });
         }
