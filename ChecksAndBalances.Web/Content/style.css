@@ -4191,3 +4191,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   -o-animation-name: rollIn;
   animation-name: rollIn;
 }
+
+img.small { width: 200px !important; height: 200px !important; }
+img.advert { height: 100px; width: 940px;}
+#candb-logo a {
+    line-height: 2;
+    font-weight: 900;
+    font-size: 22px;
+    color: black;
+    font-family: Lato, Helvetica, Arial, sans-serif;
+}
+
+#candb-logo a span.gold {
+    color: gold;
+}
