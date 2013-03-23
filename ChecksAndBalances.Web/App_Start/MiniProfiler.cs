@@ -92,7 +92,7 @@ namespace ChecksAndBalances.Web.App_Start
 
                 if (user != null && user.Identity.Name.Equals("admin", StringComparison.OrdinalIgnoreCase))
                 {
-                    StackExchange.Profiling.MiniProfiler.Stop(discardResults: true);
+                    StackExchange.Profiling.MiniProfiler.Start();
                 }
             };
 
